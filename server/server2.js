@@ -1,37 +1,9 @@
-//const fs = require('fs').promises;
 const http = require('http');
 const url = require('url');
 const fs = require('fs');
 const path = require('path');
 
 const requestListener = function (req, res) {
-    fs.readFile(__dirname + "/index.html")
-        .then(contents => {
-            res.setHeader("Content-Type", "text/html");
-            res.writeHead(200);
-            res.end(contents);
-        })
-        .catch(err => {
-            res.writeHead(500);
-            res.end(err);
-            return;
-        });
-    fs.readFile(__dirname + "/style.css")
-        .then(contents => {
-            res.setHeader("Content-Type", "text/css");
-            res.writeHead(200);
-            res.end(contents);
-        })
-        .catch(err => {
-            res.writeHead(500);
-            res.end(err);
-            return;
-        });
-    
-};
-
-
-const requestListener2 = function (req, res) {
     console.log(`${req.method} ${req.url}`);
   
     // parse URL
@@ -83,10 +55,10 @@ const requestListener2 = function (req, res) {
 
 
 
-const host = '10.106.51.219';
+const host = '192.168.1.23';
 const port = 8000;
 
-const HTMLserver = http.createServer(requestListener2);
+const HTMLserver = http.createServer(requestListener);
 HTMLserver.listen(port, host, () => {
     console.log(`Server is running on http://${host}:${port}`);
 });
@@ -126,6 +98,8 @@ function originIsAllowed(origin) {
   return true;
 }
  
+var static_ID = 1
+
 wsServer.on('request', function(request) {
     if (!originIsAllowed(request.origin)) {
       // Make sure we only accept requests from an allowed origin
@@ -139,22 +113,29 @@ wsServer.on('request', function(request) {
     var connection = request.accept('echo-protocol', request.origin);
 
     clients.push(connection)
+    
+    
+    var ID = static_ID
+    static_ID += 1
+    if (static_ID > 10000000) static_ID = 1
+    //var ID =  Math.floor(Math.random() * 1000000)
+    
 
     console.log((new Date()) + ' Connection accepted.');
     connection.on('message', function(message) {
         if (message.type === 'utf8') {
             console.log('Received Message: ' + message.utf8Data);
+
+
+
             clients.forEach((x)=>{
-                x.sendUTF(message.utf8Data);
+                x.sendUTF(JSON.stringify({name: ID, data : message.utf8Data}));
             })
             
-        }
-        else if (message.type === 'binary') {
-            console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
-            connection.sendBytes(message.binaryData);
         }
     });
     connection.on('close', function(reasonCode, description) {
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+        clients = clients.filter(x => x != connection)
     });
 });

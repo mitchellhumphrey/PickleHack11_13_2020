@@ -10,7 +10,7 @@ window.onload = function() {
 
 
   // Create a new WebSocket.
-  var socket = new WebSocket('ws://10.106.51.219:8080',"echo-protocol");
+  var socket = new WebSocket('ws://192.168.1.23:8080',"echo-protocol");
 
 
   // Handle any errors that occur.
@@ -29,9 +29,16 @@ window.onload = function() {
 
   // Handle messages sent by the server.
   socket.onmessage = function(event) {
-    var message = event.data;
-    messagesList.innerHTML += '<li class="received"><span>Received:</span>' +
-                               message + '</li>';
+    var message = JSON.parse(event.data);
+    messagesList.innerHTML += '<li class="received"><span>User '+message.name+':</span>' +
+                               message.data + '</li>';
+    var liList = messagesList.getElementsByTagName("li");
+    if (liList.length > 15){
+      liList[0].remove();      
+    }
+    
+
+
   };
 
 
