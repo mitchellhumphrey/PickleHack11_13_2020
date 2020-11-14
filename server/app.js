@@ -22,7 +22,7 @@ window.onload = function() {
   // Show a connected message when the WebSocket is opened.
   socket.onopen = function(event) {
     console.log(event);
-    socketStatus.innerHTML = 'Connected to: ' + event.currentTarget.url;
+    socketStatus.innerHTML = 'Pickled to: ' + event.currentTarget.url;
     socketStatus.className = 'open';
   };
 
@@ -30,7 +30,7 @@ window.onload = function() {
   // Handle messages sent by the server.
   socket.onmessage = function(event) {
     var message = JSON.parse(event.data);
-    messagesList.innerHTML += '<li class="received"><span>User '+message.name+':</span>' +
+    messagesList.innerHTML += '<li class="received"><span>Pickle '+message.name+':</span>' +
                                message.data + '</li>';
     var liList = messagesList.getElementsByTagName("li");
     if (liList.length > 15){
@@ -56,14 +56,19 @@ window.onload = function() {
     // Retrieve the message from the textarea.
     var message = messageField.value;
 
-    // Send the message through the WebSocket.
-    socket.send(message);
+    if (isValidMessage(message)){
+      // Send the message through the WebSocket.
+      socket.send(message);
 
-    // Add the message to the messages list.
-    //messagesList.innerHTML += '<li class="sent"><span>Sent:</span>' + message +'</li>';
+      // Clear out the message field.
+      messageField.value = '';
 
-    // Clear out the message field.
-    messageField.value = '';
+      
+    }
+    else{
+      alert("Not a Pickle")
+      messageField.value = '';
+    }
 
     return false;
   };
@@ -78,5 +83,18 @@ window.onload = function() {
 
     return false;
   };
+
+
+  function isValidMessage(text){
+    var temp = text
+    temp = temp.replace(/🥒|!|\?|>|<|@|#|\$|%|\^|&|\*|\(|\)|,|\./g, "")
+    temp = temp.replace(/\s/g, "")
+    temp = temp.replace (/\n/g,'')
+    console.log(temp)
+    
+    let regex = new RegExp("^(pickle)*(p(i(c(kl?)?)?)?)?$")
+    return regex.test(temp.toLowerCase())
+
+  }
 
 };
