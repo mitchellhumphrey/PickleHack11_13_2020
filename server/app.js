@@ -7,7 +7,7 @@ window.onload = function() {
   var messagesList = document.getElementById('messages');
   var socketStatus = document.getElementById('status');
   var closeBtn = document.getElementById('close');
-
+  var pickleBtn = document.getElementById('pickle');
 
   // Create a new WebSocket.
   var socket = new WebSocket('ws://192.168.1.23:8080',"echo-protocol");
@@ -84,6 +84,11 @@ window.onload = function() {
     return false;
   };
 
+  pickleBtn.onclick = function(e) {
+    e.preventDefault();
+    messageField.value += "🥒"
+  }
+
 
   function isValidMessage(text){
     var temp = text
@@ -94,7 +99,6 @@ window.onload = function() {
     
     let regex = new RegExp("^(pickle)*(p(i(c(kl?)?)?)?)?$")
     return regex.test(temp.toLowerCase())
-
   }
 
 };
