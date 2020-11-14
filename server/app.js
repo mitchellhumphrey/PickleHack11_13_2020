@@ -10,7 +10,7 @@ window.onload = function() {
   var pickleBtn = document.getElementById('pickle');
 
   // Create a new WebSocket.
-  var socket = new WebSocket('ws://192.168.1.23:8080',"echo-protocol");
+  var socket = new WebSocket('ws://64.251.153.118:8080',"echo-protocol");
 
 
   // Handle any errors that occur.
