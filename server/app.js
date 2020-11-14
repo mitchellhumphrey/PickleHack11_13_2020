@@ -1,3 +1,4 @@
+
 window.onload = function() {
 
   // Get references to elements on the page.
@@ -9,7 +10,7 @@ window.onload = function() {
 
 
   // Create a new WebSocket.
-  var socket = new WebSocket('ws://echo.websocket.org');
+  var socket = new WebSocket('ws://10.106.51.219:8080',"echo-protocol");
 
 
   // Handle any errors that occur.
@@ -20,7 +21,8 @@ window.onload = function() {
 
   // Show a connected message when the WebSocket is opened.
   socket.onopen = function(event) {
-    socketStatus.innerHTML = 'Connected to: ' + event.currentTarget.URL;
+    console.log(event);
+    socketStatus.innerHTML = 'Connected to: ' + event.currentTarget.url;
     socketStatus.className = 'open';
   };
 
@@ -51,8 +53,7 @@ window.onload = function() {
     socket.send(message);
 
     // Add the message to the messages list.
-    messagesList.innerHTML += '<li class="sent"><span>Sent:</span>' + message +
-                              '</li>';
+    //messagesList.innerHTML += '<li class="sent"><span>Sent:</span>' + message +'</li>';
 
     // Clear out the message field.
     messageField.value = '';

@@ -83,13 +83,20 @@ const requestListener2 = function (req, res) {
 
 
 
-const host = 'localhost';
+const host = '10.106.51.219';
 const port = 8000;
 
 const HTMLserver = http.createServer(requestListener2);
 HTMLserver.listen(port, host, () => {
     console.log(`Server is running on http://${host}:${port}`);
 });
+
+
+
+//===================================================================
+
+var clients = []
+
 
 
 var WebSocketServer = require('websocket').server;
@@ -126,13 +133,21 @@ wsServer.on('request', function(request) {
       console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
       return;
     }
+
+    
     
     var connection = request.accept('echo-protocol', request.origin);
+
+    clients.push(connection)
+
     console.log((new Date()) + ' Connection accepted.');
     connection.on('message', function(message) {
         if (message.type === 'utf8') {
             console.log('Received Message: ' + message.utf8Data);
-            connection.sendUTF(message.utf8Data);
+            clients.forEach((x)=>{
+                x.sendUTF(message.utf8Data);
+            })
+            
         }
         else if (message.type === 'binary') {
             console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
